@@ -1,14 +1,17 @@
-function detectDeepfake(imageUrl) {
-  console.log("Analyzing image for deepfake:", imageUrl);
-  // Implement your deepfake detection logic here
-  alert("Deepfake analysis initiated for: " + imageUrl);
+const API_KEY = '-GOOGLE API KEY HERE';
+
+function detectDeepfake(imageUrl, captionText) {
+  checkImage(imageUrl);        // Use deepfake detection here.
+  checkFact(captionText);      // Use Google Fact Check API on the caption.
 }
 
 
-const API_KEY = 'YOUR_GOOGLE_API_KEY';
-
 //Function takes in a query and returns the fact check result
-//Usage example checkFact("COVID-19 is a hoax")
+//Must use await because async
+//Usage Example
+//Const verdict = await checkFact("Covid-19 is a hoax")
+
+
 //Put in the image caption as the query
 //Returns "No fact check found" if no fact check is found
 //Returns "Error fetching fact check" if there is an error
