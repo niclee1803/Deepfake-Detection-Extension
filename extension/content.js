@@ -4,44 +4,41 @@ const CX = "221e99964660845fb"; // Google custom search engine ID (not secret)
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "detectDeepfake") {
-    detectDeepfake(message.imageUrl);
+    detectDeepfake(message.blob);
   } else if (message.action === "verifyFakeNews") {
     googleCustomSearch(message.selectedText);
   }
 });
 
-function detectDeepfake(imageUrl) {
-  console.log("Analyzing image for deepfake:", imageUrl);
+function detectDeepfake(imageBlob) {
+  console.log("Analyzing image for deepfake:");
 
-  // Fetch the image data as a blob
-  fetch(imageUrl)
-    .then(response => response.blob())
-    .then(blob => {
-      // Prepare the FormData with the image blob
-      const formData = new FormData();
-      formData.append("file", blob, "image.jpg");
+    // Use the received blob directly
+    const blob = imageBlob;
+    const formData = new FormData();
+    formData.append("file", blob, "image.jpg");
 
-      // Make the POST request to your FastAPI backend
-      return fetch("http://127.0.0.1:8000/detect/", {
-        method: "POST",
-        body: formData
+    // Send the formData to your FastAPI backend
+    fetch("http://127.0.0.1:8000/detect/", {
+      method: "POST",
+      body: formData
+    })
+      .then(response => response.json())
+      .then(data => {
+        let resultMessage = "Deepfake detection results:\n";
+        for (const label in data) {
+          const probability = (data[label] * 100).toFixed(2);
+          resultMessage += `${label}: ${probability}%\n`;
+        }
+        alert(resultMessage);
+      })
+      .catch(error => {
+        console.error("Error in deepfake detection:", error);
+        alert("Error processing the image.");
       });
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Example response: { "Real": 0.92, "Fake": 0.08 }
-      let resultMessage = "Deepfake detection results:\n";
-      for (const label in data) {
-        const probability = (data[label] * 100).toFixed(2);
-        resultMessage += `${label}: ${probability}%\n`;
-      }
-      alert(resultMessage);
-    })
-    .catch(error => {
-      console.error("Error in deepfake detection:", error);
-      alert("Error processing the image.");
-    });
-}
+};
+
+
 
 
 function checkFact(query) {

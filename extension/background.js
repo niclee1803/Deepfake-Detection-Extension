@@ -22,3 +22,23 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     chrome.tabs.sendMessage(tab.id, { action: "verifyFakeNews", selectedText: info.selectionText });
   }
 });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "fetchImageBlob") {
+    fetch(message.imageUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.blob();
+      })
+      .then(blob => {
+        // Send the blob directly to the content script
+        sendResponse({ blobData: blob });
+      })
+      .catch(error => {
+        sendResponse({ error: error.message });
+      });
+    return true; // Keep the messaging channel open for asynchronous response.
+  }
+});
