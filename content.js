@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyAsRKjrkh8oPyywcdNSdmvY-4G4QM5TjCI";
+const API_KEY = "";
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "detectDeepfake") {
