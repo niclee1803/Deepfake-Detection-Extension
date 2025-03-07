@@ -20,9 +20,9 @@ model_name = "prithivMLmods/Deepfake-Real-Class-Siglip2"
 model = SiglipForImageClassification.from_pretrained(model_name)
 processor = AutoImageProcessor.from_pretrained(model_name)
 
-def classify_image(image):
+def classify_image(image_data):
     """Classifies an image as Fake or Real."""
-    image = Image.fromarray(image).convert("RGB")
+    image = Image.open(io.BytesIO(image_data)).convert("RGB")
     inputs = processor(images=image, return_tensors="pt")
     
     with torch.no_grad():
@@ -39,16 +39,8 @@ def classify_image(image):
 async def detect_deepfake(file: UploadFile = File(...)):
     image_data = await file.read()
     print("DEBUG: Received file size:", len(image_data))
-    print("DEBUG: Received file size:", len(image_data))
-    print("DEBUG: Received file size:", len(image_data))
-    print("DEBUG: Received file size:", len(image_data))
-    print("DEBUG: Received file size:", len(image_data))
-    print("DEBUG: Received file size:", len(image_data))
-    print("DEBUG: Received file size:", len(image_data))
-    print("DEBUG: Received file size:", len(image_data))
-    print("DEBUG: Received file size:", len(image_data))
-    print("DEBUG: Received file size:", len(image_data))
     result = classify_image(image_data)
+    print(result)
     return result
 
 if __name__ == "__main__":
