@@ -1,8 +1,11 @@
 const API_KEY = process.env.FACT_CHECK_API_KEY;
 
+// Listen for messages from the background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "detectDeepfake") {
     detectDeepfake(message.imageUrl);
+  } else if (message.action === "verifyFakeNews") {
+    checkFact(message.selectedText);
   }
 });
 
@@ -24,24 +27,26 @@ function detectDeepfake(imageUrl) {
 //Returns "No fact check found" if no fact check is found
 //Returns "Error fetching fact check" if there is an error
 //Returns Verdict: Can be False or True
-// function checkFact(query) {
-//   const apiUrl = `https://factchecktools.googleapis.com/v1alpha1/claims:search?key=${API_KEY}&query=${encodeURIComponent(query)}&languageCode=en-US`;
+function checkFact(query) {
+  const apiUrl = `https://factchecktools.googleapis.com/v1alpha1/claims:search?key=${API_KEY}&query=${encodeURIComponent(query)}&languageCode=en-US`;
 
-//   return fetch(apiUrl)
-//     .then(response => response.json())
-//     .then(data => {
-//       if (data.claims && data.claims.length > 0) {
-//         const firstClaim = data.claims[0];
-//         const firstReview = firstClaim.claimReview[0];
-//         const verdict = firstReview.textualRating;
-
-//         return verdict;
-//       } else {
-//         return 'No fact check found';
-//       }
-//     })
-//     .catch(error => {
-//       console.error('Error fetching fact check:', error);
-//       return 'Error fetching fact check';
-//     });
-// }
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      let result;
+      if (data.claims && data.claims.length > 0) {
+        const firstClaim = data.claims[0];
+        const firstReview = firstClaim.claimReview[0];
+        const verdict = firstReview.textualRating;
+        result = `Fact check result: ${verdict}`;
+      } else {
+        result = 'No fact check found';
+      }
+      console.log(result);
+      alert(result);
+    })
+    .catch(error => {
+      console.error('Error fetching fact check:', error);
+      alert('Error fetching fact check');
+    });
+}
