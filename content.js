@@ -1,4 +1,4 @@
-const API_KEY = process.env.FACT_CHECK_API_KEY;
+const API_KEY = "";
 
 // Listen for messages from the background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
