@@ -2,7 +2,6 @@ const API_KEY = "";
 const GOOGLE_CUSTOM_SEARCH_API_KEY = "";
 const CX = "221e99964660845fb"; // Google custom search engine ID (not secret)
 
-// Listen for messages from the background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "detectDeepfake") {
     detectDeepfake(message.imageUrl);
@@ -11,24 +10,40 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Your deepfake detection logic goes here
 function detectDeepfake(imageUrl) {
   console.log("Analyzing image for deepfake:", imageUrl);
-  alert("Deepfake analysis initiated for: " + imageUrl);
 
-  // TODO: Add your deepfake detection logic here (API calls, processing, etc.)
+  // Fetch the image data as a blob
+  fetch(imageUrl)
+    .then(response => response.blob())
+    .then(blob => {
+      // Prepare the FormData with the image blob
+      const formData = new FormData();
+      formData.append("file", blob, "image.jpg");
+
+      // Make the POST request to your FastAPI backend
+      return fetch("http://127.0.0.1:8000/detect/", {
+        method: "POST",
+        body: formData
+      });
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Example response: { "Real": 0.92, "Fake": 0.08 }
+      let resultMessage = "Deepfake detection results:\n";
+      for (const label in data) {
+        const probability = (data[label] * 100).toFixed(2);
+        resultMessage += `${label}: ${probability}%\n`;
+      }
+      alert(resultMessage);
+    })
+    .catch(error => {
+      console.error("Error in deepfake detection:", error);
+      alert("Error processing the image.");
+    });
 }
 
-//Function takes in a query and returns the fact check result
-//Must use await because async
-//Usage Example
-//Const verdict = await checkFact("Covid-19 is a hoax")
 
-
-//Put in the image caption as the query
-//Returns "No fact check found" if no fact check is found
-//Returns "Error fetching fact check" if there is an error
-//Returns Verdict: Can be False or True
 function checkFact(query) {
   const apiUrl = `https://factchecktools.googleapis.com/v1alpha1/claims:search?key=${API_KEY}&query=${encodeURIComponent(query)}&languageCode=en-US`;
 
