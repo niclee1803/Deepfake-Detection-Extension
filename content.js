@@ -1,4 +1,4 @@
-const API_KEY = '-GOOGLE API KEY HERE';
+const API_KEY = process.env.FACT_CHECK_API_KEY;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "detectDeepfake") {
