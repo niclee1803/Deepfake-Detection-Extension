@@ -3,13 +3,13 @@
   "name": "Deepfake Detector",
   "version": "1.0",
   "description": "Detect deepfake images using right-click.",
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "permissions": [
     "activeTab",
     "contextMenus",
     "scripting"
-  ],
-  "host_permissions":[
-    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"

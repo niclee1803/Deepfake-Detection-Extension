@@ -1,65 +1,57 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "deepfakeResult") {
-    let resultMessage = "Deepfake detection results:\n";
-    for (const label in message.result) {
-      const probability = (message.result[label] * 100).toFixed(2);
-      resultMessage += `${label}: ${probability}%\n`;
-    }
-    alert(resultMessage);
-  } else if (message.action === "verifyFakeNews") {
-    verifyClaimWithPerplexity(message.selectedText);
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.action === "showAnalysisResult") {
+    showFloatingPopup(message.content);
   }
 });
 
-function verifyClaimWithPerplexity(query) {
-  const apiUrl = 'https://api.perplexity.ai/chat/completions';  
-  
+function showFloatingPopup(content) {
+  const existingPopup = document.getElementById('analysis-popup');
+  if (existingPopup) existingPopup.remove();
 
-  const prompt = `
-You are a fact-checking assistant. Based on the following claim, determine if it is True, False, Inaccurate, or Cannot Get (if there's not enough information).
+  const popup = document.createElement('div');
+  popup.id = 'analysis-popup';
+  popup.innerHTML = content;
+  popup.style.position = 'fixed';
+  popup.style.bottom = '20px';
+  popup.style.right = '20px';
+  popup.style.backgroundColor = '#111';
+  popup.style.color = '#fff';
+  popup.style.padding = '15px';
+  popup.style.border = '1px solid #444';
+  popup.style.boxShadow = '0 4px 12px rgba(0,0,0,0.6)';
+  popup.style.zIndex = '10000';
+  popup.style.fontFamily = 'Arial, sans-serif';
+  popup.style.borderRadius = '10px';
+  popup.style.fontSize = '14px';
+  popup.style.lineHeight = '1.5';
+  popup.style.opacity = '0.95';
 
-Claim: "${query}"
+  // Add these for link wrapping:
+  popup.style.wordWrap = 'break-word';
+  popup.style.overflow = 'hidden';
+  popup.style.textOverflow = 'ellipsis';
+  popup.style.maxWidth = '320px';
+  popup.style.maxHeight = '400px';
+  popup.style.overflowY = 'auto';
 
-Search results from trusted fact-checking sources
+  const closeBtn = document.createElement('button');
+  closeBtn.innerText = 'Close';
+  closeBtn.style.backgroundColor = '#555';
+  closeBtn.style.color = '#fff';
+  closeBtn.style.border = 'none';
+  closeBtn.style.padding = '5px 10px';
+  closeBtn.style.cursor = 'pointer';
+  closeBtn.style.marginTop = '10px';
+  closeBtn.style.borderRadius = '5px';
 
-Please provide your verdict and reasoning in the following format only:
-Verdict: [True/False/Inaccurate/Cannot get]
-Reasoning: [Detailed reasoning based on the search results]
-Link to source: [Optional: URL to the fact-checking article]
-`;
+  closeBtn.onclick = () => popup.remove();
 
-  fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify({
-      model: "sonar",
-      messages: [
-        { role: "system", content: "Be precise and concise." },
-        { role: "user", content: prompt }
-      ]
-    }),
-  })
-  .then(response => {
-    if (!response.ok) {
-      return response.json().then(err => { throw new Error(err.message || "Failed to connect to Perplexity API"); });
-    }
-    return response.json();
-  })
-  .then(data => {
-    let resultText = "No result returned.";
-    if (data && data.choices && data.choices.length > 0) {
-      resultText = data.choices[0].message.content.trim();
-    }
+  popup.appendChild(closeBtn);
 
-    // Show result in an alert
-    alert(resultText);
-  })
-  .catch(error => {
-    console.error("Error verifying the claim:", error);
-    alert(`Error: ${error.message}`);
-  });
+  document.body.appendChild(popup);
+
+  setTimeout(() => popup.remove(), 15000);
 }
+
+
+
