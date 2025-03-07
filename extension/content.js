@@ -1,44 +1,17 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "detectDeepfake") {
-    console.log("Received blob:", message.blob);
-    console.log("Blob is instance of Blob:", message.blob instanceof Blob);
-    if (message.blob) {
-      console.log("Blob type:", message.blob.type);
-      console.log("Blob size:", message.blob.size);
+    alert("Received message from background.js");
+    let resultMessage = "Deepfake detection results:\n";
+    for (const label in message.result) {
+      const probability = (message.result[label] * 100).toFixed(2);
+      resultMessage += `${label}: ${probability}%\n`;
     }
-    detectDeepfake(message.blob);
+    alert(resultMessage);
   } else if (message.action === "verifyFakeNews") {
     verifyClaimWithPerplexity(message.selectedText);
   }
 });
 
-function detectDeepfake(imageBlob) {
-  console.log("Analyzing image for deepfake:");
-
-    // Use the received blob directly
-    const blob = imageBlob;
-    const formData = new FormData();
-    formData.append("file", blob, "image.jpg");
-
-    // Send the formData to your FastAPI backend
-    fetch("http://127.0.0.1:8000/detect/", {
-      method: "POST",
-      body: formData
-    })
-      .then(response => response.json())
-      .then(data => {
-        let resultMessage = "Deepfake detection results:\n";
-        for (const label in data) {
-          const probability = (data[label] * 100).toFixed(2);
-          resultMessage += `${label}: ${probability}%\n`;
-        }
-        alert(resultMessage);
-      })
-      .catch(error => {
-        console.error("Error in deepfake detection:", error);
-        alert("Error processing the image.");
-      });
-};
 
 
 

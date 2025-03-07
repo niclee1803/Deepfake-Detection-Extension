@@ -14,23 +14,32 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-// Handle right-click event and send image URL to content.js
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "detect-deepfake") {
     fetch(info.srcUrl)
       .then(response => {
         if (!response.ok) {
-          throw new Error("Network response was not ok: " + response.status);
+          throw new Error("Failed to fetch image: " + response.status);
         }
-        console.log("Image fetched successfully");
         return response.blob();
       })
       .then(blob => {
-        chrome.tabs.sendMessage(tab.id, { action: "detectDeepfake", blob: blob });
+        console.log("blob received")
+        const extension = blob.type.split("/")[1];
+        const formData = new FormData();
+        formData.append("file", blob, `image.${extension}`);
+        return fetch("http://127.0.0.1:8000/detect/", {
+          method: "POST",
+          body: formData
+        });
+      })
+      .then(response => response.json())
+      .then(result => {
+        console.log("Background: Received result from API:", result);
+        chrome.tabs.sendMessage(tab.id, { action: "deepfakeResult", result: result });
       })
       .catch(error => {
-        console.error("Error fetching image blob:", error);
-        chrome.tabs.sendMessage(tab.id, { action: "error", message: error.message });
+        console.error("Deepfake detection error:", error);
       });
   } else if (info.menuItemId === "verify-fake-news") {
     chrome.tabs.sendMessage(tab.id, { action: "verifyFakeNews", selectedText: info.selectionText });
