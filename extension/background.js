@@ -17,28 +17,22 @@ chrome.runtime.onInstalled.addListener(() => {
 // Handle right-click event and send image URL to content.js
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "detect-deepfake") {
-    chrome.tabs.sendMessage(tab.id, { action: "detectDeepfake", imageUrl: info.srcUrl });
-  } else if (info.menuItemId === "verify-fake-news") {
-    chrome.tabs.sendMessage(tab.id, { action: "verifyFakeNews", selectedText: info.selectionText });
-  }
-});
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "fetchImageBlob") {
-    fetch(message.imageUrl)
+    fetch(info.srcUrl)
       .then(response => {
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok: " + response.status);
         }
+        console.log("Image fetched successfully");
         return response.blob();
       })
       .then(blob => {
-        // Send the blob directly to the content script
-        sendResponse({ blobData: blob });
+        chrome.tabs.sendMessage(tab.id, { action: "detectDeepfake", blob: blob });
       })
       .catch(error => {
-        sendResponse({ error: error.message });
+        console.error("Error fetching image blob:", error);
+        chrome.tabs.sendMessage(tab.id, { action: "error", message: error.message });
       });
-    return true; // Keep the messaging channel open for asynchronous response.
+  } else if (info.menuItemId === "verify-fake-news") {
+    chrome.tabs.sendMessage(tab.id, { action: "verifyFakeNews", selectedText: info.selectionText });
   }
 });

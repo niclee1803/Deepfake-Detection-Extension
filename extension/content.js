@@ -1,5 +1,11 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "detectDeepfake") {
+    console.log("Received blob:", message.blob);
+    console.log("Blob is instance of Blob:", message.blob instanceof Blob);
+    if (message.blob) {
+      console.log("Blob type:", message.blob.type);
+      console.log("Blob size:", message.blob.size);
+    }
     detectDeepfake(message.blob);
   } else if (message.action === "verifyFakeNews") {
     verifyClaimWithPerplexity(message.selectedText);
