@@ -49,8 +49,6 @@ function showFloatingPopup(content) {
   popup.appendChild(closeBtn);
 
   document.body.appendChild(popup);
-
-  setTimeout(() => popup.remove(), 15000);
 }
 
 
