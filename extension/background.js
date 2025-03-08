@@ -12,7 +12,7 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-const apiKey = "pplx-";
+const apiKey = "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";
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "detect-deepfake") {
@@ -126,7 +126,12 @@ Be neutral, objective, and rely only on verifiable facts.
         .replace(/CONFIDENCE:/g, "<br><br><strong>CONFIDENCE:</strong>")
         .replace(/REASONING:/g, "<br><br><strong>REASONING:</strong>")
         .replace(/SOURCES:/g, "<br><br><strong>SOURCES:</strong><br>");
-      formattedContent = formattedContent.replace(/,\s*/g, "<br>");
+      
+      formattedContent = formattedContent.replace(
+        /(https?:\/\/[^\s<>]+)/g,
+        (match) => match.replace(/,\s*/g, "<br>") 
+      );
+      
       formattedContent = formattedContent.replace(
         /(https?:\/\/[^\s<>]+)/g,
         '<a href="$1" target="_blank" style="color: #4da6ff; text-decoration: underline;">$1</a><br>'
