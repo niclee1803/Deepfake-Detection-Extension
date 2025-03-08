@@ -20,7 +20,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     chrome.tabs.sendMessage(tab.id, {
       action: "showAnalysisResult",
       content: `
-        <p>Analyzing image<span class="loading-circle"></span></p>
+        <p>Analysing image<span class="loading-circle"></span></p>
       `,
     });
     
