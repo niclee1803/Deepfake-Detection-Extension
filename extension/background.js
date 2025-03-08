@@ -16,6 +16,14 @@ const apiKey = "pplx-";
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "detect-deepfake") {
+    // Show loading spinner for image detection
+    chrome.tabs.sendMessage(tab.id, {
+      action: "showAnalysisResult",
+      content: `
+        <p>Analyzing image<span class="loading-circle"></span></p>
+      `,
+    });
+    
     fetch(info.srcUrl)
       .then((response) => response.blob())
       .then((blob) => {
@@ -40,33 +48,36 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
           .join("<br>");
         chrome.tabs.sendMessage(tab.id, {
           action: "showAnalysisResult",
-          content: `<h2>Deepfake Detection Results:</h2>${formattedResult}`,
+          content: `<h2>Deepfake Detection Results</h2>${formattedResult}`,
         });
       })
       .catch((error) => {
         chrome.tabs.sendMessage(tab.id, {
           action: "showAnalysisResult",
-          content: `<p>Error detecting deepfake: ${error.message}</p>`,
+          content: `<h2>Error</h2><p style="color: #ff6b6b;">Failed to detect deepfake: ${error.message}</p>`,
         });
       });
   } else if (info.menuItemId === "verify-fake-news") {
+    // Show loading spinner for claim verification
     chrome.tabs.sendMessage(tab.id, {
       action: "showAnalysisResult",
-      content: `<p>Verifying claim: "${info.selectionText}"...</p>`,
+      content: `
+        <p>Verifying: "${info.selectionText.substring(0, 100)}${info.selectionText.length > 100 ? '...' : ''}"<span class="loading-circle"></span></p>
+      `,
     });
 
-    // Call the API directly from background.js (or refactor this to content.js if you prefer)
+    // Call the API directly from background.js
     verifyClaimWithPerplexity(info.selectionText)
       .then((result) => {
         chrome.tabs.sendMessage(tab.id, {
           action: "showAnalysisResult",
-          content: `<h2>Verification of Claim:</h2><p>${result}</p>`,
+          content: `<h2>Verification Results</h2>${result}`,
         });
       })
       .catch((error) => {
         chrome.tabs.sendMessage(tab.id, {
           action: "showAnalysisResult",
-          content: `<p>Error verifying claim: ${error.message}</p>`,
+          content: `<h2>Error</h2><p style="color: #ff6b6b;">Failed to verify claim: ${error.message}</p>`,
         });
       });
   }
@@ -136,7 +147,6 @@ Be neutral, objective, and rely only on verifiable facts.
         /(https?:\/\/[^\s<>]+)/g,
         '<a href="$1" target="_blank" style="color: #4da6ff; text-decoration: underline;">$1</a><br>'
       );
-
       return formattedContent;
     });
 }

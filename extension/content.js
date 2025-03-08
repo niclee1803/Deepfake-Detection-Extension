@@ -8,6 +8,31 @@ function showFloatingPopup(content) {
   const existingPopup = document.getElementById('analysis-popup');
   if (existingPopup) existingPopup.remove();
 
+  // Add the spinner CSS to the page if it doesn't exist
+  if (!document.getElementById('spinner-styles')) {
+    const spinnerStyles = document.createElement('style');
+    spinnerStyles.id = 'spinner-styles';
+    spinnerStyles.textContent = `
+      .loading-circle {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        margin: 0 10px;
+        border: 2px solid rgba(170, 170, 170, 0.3);
+        border-radius: 50%;
+        border-top-color: #aaa;
+        animation: spin 0.8s linear infinite;
+        vertical-align: middle;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(spinnerStyles);
+  }
+
   const popup = document.createElement('div');
   popup.id = 'analysis-popup';
   popup.innerHTML = content;
@@ -50,6 +75,3 @@ function showFloatingPopup(content) {
 
   document.body.appendChild(popup);
 }
-
-
-
