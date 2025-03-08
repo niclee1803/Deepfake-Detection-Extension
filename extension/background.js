@@ -12,7 +12,7 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-const apiKey = "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";
+const apiKey = "pplx-";
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "detect-deepfake") {
