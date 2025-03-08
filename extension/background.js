@@ -29,14 +29,18 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       .then((response) => response.json())
       .then((result) => {
         const formattedResult = Object.entries(result)
-          .map(
-            ([label, probability]) =>
-              `${label}: ${(probability * 100).toFixed(2)}%`
-          )
+          .map(([modelName, predictions]) => {
+            const modelResults = Object.entries(predictions)
+              .map(([label, probability]) => 
+                `${label}: ${(probability * 100).toFixed(2)}%`
+              )
+              .join("<br>");
+            return `<h3>${modelName} Results:</h3><p>${modelResults}</p>`;
+          })
           .join("<br>");
         chrome.tabs.sendMessage(tab.id, {
           action: "showAnalysisResult",
-          content: `<h2>Deepfake Detection Results:</h2><p>${formattedResult}</p>`,
+          content: `<h2>Deepfake Detection Results:</h2>${formattedResult}`,
         });
       })
       .catch((error) => {
@@ -125,7 +129,7 @@ Be neutral, objective, and rely only on verifiable facts.
       formattedContent = formattedContent.replace(/,\s*/g, "<br>");
       formattedContent = formattedContent.replace(
         /(https?:\/\/[^\s<>]+)/g,
-        '• <a href="$1" target="_blank" style="color: #4da6ff; text-decoration: underline;">$1</a>'
+        '<a href="$1" target="_blank" style="color: #4da6ff; text-decoration: underline;">$1</a><br>'
       );
 
       return formattedContent;
