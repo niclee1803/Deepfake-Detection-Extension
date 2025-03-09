@@ -27,7 +27,9 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 ## Tools used
 * Javascript, HTML, CSS for frontend
 * Python, FastAPI for backend
-* PyTorch library for deepfake detection models
+* Pillow for image processing
+* Transformer library for deepfake model management
+* PyTorch library for deepfake model inference
 * Docker for containerisation
 * Google Cloud Run for deployment of FastAPI
 
