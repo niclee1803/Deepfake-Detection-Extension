@@ -1,5 +1,5 @@
 # VerifyAI Chrome Extension
-<img src="screenshot.png?raw=true" height="500" width="500" alt="sample"/>
+<img src="screenshot.png?raw=true" height="500" width="750" alt="sample"/>
 
 ## About
 With our Chrome extension, you can verify information online in just a few clicks, without even needing to leave your tab.
