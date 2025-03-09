@@ -1,5 +1,5 @@
 # VerifyAI Chrome Extension
-![sample](screenshot.png?raw=true)
+<image src="screenshot.png"?raw=true height="200" width="200" alt="sample/>
 
 ## About
 With our Chrome extension, you can verify information online in just a few clicks, without even needing to leave your tab.
@@ -28,4 +28,4 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 * Perplexity sonar model for fact checking
 * 
 
-## Sources for our models
+## Sources
