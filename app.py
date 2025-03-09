@@ -2,9 +2,8 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import torch
 import torch.nn as nn
-import torchvision.transforms as transforms
-from pretrainedmodels import xception
-from transformers import AutoModelForImageClassification, AutoImageProcessor, SiglipForImageClassification, ViTForImageClassification, ViTImageProcessor
+from torchvision import models, transforms
+from transformers import AutoModelForImageClassification, AutoImageProcessor, AutoFeatureExtractor
 from PIL import Image
 import io
 
@@ -18,11 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load SigLIP model
-siglip_model_name = "prithivMLmods/Deepfake-Real-Class-Siglip2"
-siglip_model = SiglipForImageClassification.from_pretrained(siglip_model_name)
-siglip_processor = AutoImageProcessor.from_pretrained(siglip_model_name, use_fast=True)
-
+"""
 # Load Xception (PyTorch) model from local weights
 xception_model = xception(num_classes=1000, pretrained=None)
 local_weights = "xception-43020ad28.pth"
@@ -46,28 +41,6 @@ xception_transform = transforms.Compose([
     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
 ])
 
-# Load Deep-Fake-Detector-v2-Model
-deepfake_detector_model = ViTForImageClassification.from_pretrained("prithivMLmods/Deep-Fake-Detector-v2-Model")
-deepfake_detector_processor = ViTImageProcessor.from_pretrained("prithivMLmods/Deep-Fake-Detector-v2-Model", use_fast=True)
-
-# SigLIP classifier
-def classify_with_siglip(image_data):
-    try:
-        image = Image.open(io.BytesIO(image_data)).convert("RGB")
-        inputs = siglip_processor(images=image, return_tensors="pt")
-        
-        with torch.no_grad():
-            outputs = siglip_model(**inputs)
-            logits = outputs.logits
-            probs = torch.nn.functional.softmax(logits, dim=1).squeeze().tolist()
-        
-        labels = siglip_model.config.id2label
-        predictions = {labels[i]: round(probs[i], 3) for i in range(len(probs))}
-        return predictions
-    except Exception as e:
-        print(f"Error in SigLIP classification: {e}", flush=True)
-        return {"error": str(e)}
-
 # Xception classifier
 def classify_with_xception(image_data):
     try:
@@ -86,50 +59,27 @@ def classify_with_xception(image_data):
     except Exception as e:
         print(f"Error in Xception classification: {e}", flush=True)
         return {"error": str(e)}
-
-# Deep-Fake-Detector-v2-Model classifier
-def classify_with_deepfake_detector(image_data):
-    try:
-        print("Processing with Deep-Fake-Detector-v2-Model...", flush=True)
-        
-        # Load and preprocess the image
-        image = Image.open(io.BytesIO(image_data)).convert("RGB")
-        inputs = deepfake_detector_processor(images=image, return_tensors="pt")
-
-        # Perform inference
-        with torch.no_grad():
-            outputs = deepfake_detector_model(**inputs)
-            logits = outputs.logits
-            predicted_class = torch.argmax(logits, dim=1).item()
-            probs = torch.nn.functional.softmax(logits, dim=1).squeeze().tolist()
-
-        # Map class indices to labels and create result dictionary
-        result = {deepfake_detector_model.config.id2label[i]: round(probs[i], 3) 
-                  for i in range(len(probs))}
-        
-        print(f"DeepfakeDetector result: {result}", flush=True)
-        return result
-    except Exception as e:
-        print(f"Error in DeepfakeDetector classification: {e}", flush=True)
-        return {"error": str(e)}
+"""
     
-##################################################################
-processor = AutoImageProcessor.from_pretrained("Organika/sdxl-detector")
-model = AutoModelForImageClassification.from_pretrained("Organika/sdxl-detector")
+#########################################################################################################
+# SDXL Detector
+#########################################################################################################
+sdxl_model = AutoModelForImageClassification.from_pretrained("Organika/sdxl-detector")
+sdxl_processor = AutoImageProcessor.from_pretrained("Organika/sdxl-detector", use_fast=True)
 def classify_with_sdxl_detector(image_data):
     try:
         # Load and preprocess the image
         image = Image.open(io.BytesIO(image_data)).convert("RGB")
-        inputs = processor(images=image, return_tensors="pt")
+        inputs = sdxl_processor(images=image, return_tensors="pt")
 
         # Perform inference
         with torch.no_grad():
-            outputs = deepfake_detector_model(**inputs)
+            outputs = sdxl_model(**inputs)
             logits = outputs.logits
             probs = torch.nn.functional.softmax(logits, dim=1).squeeze().tolist()
 
         # Map class indices to labels and create result dictionary
-        result = {model.config.id2label[i]: round(probs[i], 3) 
+        result = {sdxl_model.config.id2label[i]: round(probs[i], 3) 
                 for i in range(len(probs))}
         
         print(f"sdxl result: {result}", flush=True)
@@ -138,30 +88,86 @@ def classify_with_sdxl_detector(image_data):
         print(f"Error in sdxl classification: {e}", flush=True)
         return {"error": str(e)}
     
-##################################################################
+#########################################################################################################
+# MidJourneyV6 + SDXL Detector
+#########################################################################################################
+mjv6_sdxl_model = AutoModelForImageClassification.from_pretrained("ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL")
+mjv6_sdxl_feature_extractor = AutoFeatureExtractor.from_pretrained("ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL")
+
+def classify_with_mjV6_sdxl_detector(image_data):
+    try:
+        # Load and preprocess the image
+        image = Image.open(io.BytesIO(image_data))
+        inputs = mjv6_sdxl_feature_extractor(images=image, return_tensors="pt")
+
+        # Perform inference
+        with torch.no_grad():
+            outputs = mjv6_sdxl_model(**inputs)
+            logits = outputs.logits
+            predicted_label = logits.argmax(-1).item()
+
+        id2label = {0: "ai_gen", 1: "human"}
+        print("Predicted label:", id2label[predicted_label])
+        return id2label[predicted_label]
+    except Exception as e:
+        print(f"Error in mjv6_sdxl classification: {e}", flush=True)
+        return {"error": str(e)}
+    
+#########################################################################################################
+# Flux Detector
+########################################################################################################
+
+def classify_with_flux_detector(image_data):
+    def load_model(model_path, device):
+        """Loads the TorchScript model."""
+        model = torch.jit.load(model_path, map_location=device)
+        model.to(device).eval()
+        return model
+    def preprocess_image(image_data):
+        """Pre-processes the image for feeding into the model."""
+        IMG_SIZE = 1024
+        transform = transforms.Compose([
+            transforms.Resize(IMG_SIZE + 32),
+            transforms.CenterCrop(IMG_SIZE),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+        img = Image.open(io.BytesIO(image_data)).convert("RGB")
+        return transform(img).unsqueeze(0)
+    def predict(model, image_tensor, device, threshold=0.5):
+        """Performs model prediction."""
+        with torch.no_grad():
+            outputs = model(image_tensor.to(device))
+            prob = torch.sigmoid(outputs).item()
+        label = "Real" if prob >= threshold else "AI"
+        return prob, label
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = load_model("fluxmodel.pt", device)
+    image_tensor = preprocess_image(image_data)
+    prob, label = predict(model, image_tensor, device)
+    print(f"Model Prediction: {prob:.4f} -> {label}")
+    return prob, label
+
 @app.post("/detect/")
 async def detect_deepfake(file: UploadFile = File(...)):
     try:
         image_data = await file.read()
         print(f"DEBUG: Received file size: {len(image_data)}", flush=True)
-
-        siglip_result = classify_with_siglip(image_data)
-        print("SigLIP processing complete", flush=True)
-        
-        xception_result = classify_with_xception(image_data)
-        print("Xception processing complete", flush=True)
-        
-        deepfake_detector_result = classify_with_deepfake_detector(image_data)
-        print("DeepfakeDetector processing complete", flush=True)
         
         sdxl_result = classify_with_sdxl_detector(image_data)
         print("sdxl processing complete", flush=True)
+        
+        mjv6_sdxl_result = classify_with_mjV6_sdxl_detector(image_data)
+        print("mjv6_sdxl processing complete", flush=True)
+        
+        flux_result = classify_with_flux_detector(image_data)
+        print("flux processing complete", flush=True)
 
         combined_result = {
-            "SigLIP": siglip_result,
-            "XceptionNet": xception_result,
-            "DeepfakeDetectorV2": deepfake_detector_result,
-            "sdxl": sdxl_result
+            "sdxl": sdxl_result,
+            "mjv6_sdxl": mjv6_sdxl_result,
+            "flux": flux_result
         }
 
         print(f"Combined result: {combined_result}", flush=True)
