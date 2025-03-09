@@ -17,11 +17,11 @@ git clone
 const apiKey = "<PERPLEXITY_API_KEY>";
 ```
 
-3. Open Chrome -> Manage Extensions. Make sure developer mode is enabled.
+3. Open Chrome -> Manage Extensions. Make sure developer mode is enabled. Click "Load unpacked" (at the top left).
    
-4. Load unpacked the "extension" directory.
+4. Load the "extension" directory.
 
-5. Right click on any highlighted text/image. You should see a "Verify Claim"/"Detect Deepfake" option in the menu.
+5. Right click on any highlighted text/image in your browser. You should see a "Verify Claim"/"Detect Deepfake" option in the menu.
 
 ## Tools used
 * Javascript, HTML, CSS for frontend
