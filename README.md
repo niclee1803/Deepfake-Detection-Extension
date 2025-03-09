@@ -14,7 +14,7 @@ Note that the deepfake models are hosted on Google Cloud Run, which is free only
 git clone https://github.com/niclee1803/Verify-AI-Chrome-Extension
 ```
 
-2. Put in Perplexity API key in the background.js file (**Contact niclee1803@gmail.com for the API key for Techfest2025**)
+2. Put in Perplexity API key in the background.js file (**Contact niclee1803@gmail.com or @niclee1803 on Telegram for the API key for Techfest2025**)
 ``` javascript
 const apiKey = "<PERPLEXITY_API_KEY>";
 ```
