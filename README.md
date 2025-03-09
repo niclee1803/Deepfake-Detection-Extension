@@ -1,6 +1,6 @@
 # VerifyAI Chrome Extension
 ## About
-With our Chrome extension, you can verify information online in just a few clicks, without even needing to leave your tab.
+With this Chrome extension, you can verify information online in just a few clicks, without even needing to leave your tab.
 * **Verify Text Claims:** Highlight text, right-click, and select "Verify Claim" to see a verdict, confidence level, reasoning and links to sources. This feature is powered by Perplexity AI.
 * **Detect Deepfakes:** Right-click on an image and select "Detect Deepfake" to view the likelihood of it being AI-generated using multiple techniques. This feature is powered by open-source models readily available on Hugging Face.
 
