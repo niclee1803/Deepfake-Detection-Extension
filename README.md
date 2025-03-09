@@ -12,12 +12,12 @@ With our Chrome extension, you can verify information online in just a few click
 git clone
 ```
 
-2. Put in Perplexity API key in [background.js](background.js) file
+2. Put in Perplexity API key in the background.js file
 ``` javascript
 const apiKey = "<PERPLEXITY_API_KEY>";
 ```
 
-3. Open Chrome -> Extensions. Make sure developer mode is enabled.
+3. Open Chrome -> Manage Extensions. Make sure developer mode is enabled.
    
 4. Load unpacked the "extension" directory.
 
