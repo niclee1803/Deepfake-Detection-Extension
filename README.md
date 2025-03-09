@@ -40,6 +40,9 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 * [AI_ImageClassification_MidjourneyV6_SDXL by ideepankarsharma2003](https://huggingface.co/ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL) for deepfake detection
 * [sdxl-detector by Organika](https://huggingface.co/Organika/sdxl-detector) for deepfake detection
 
+## Demo Video
+[![Demo](https://img.youtube.com/vi/Tz4syHcZ2nI/0.jpg)](https://www.youtube.com/watch?v=Tz4syHcZ2nI)
+
 ## Gallery
 <p align="center">
   <img src="gallery/screenshot4.png?raw=true" height="500" width="400" alt="sample" />
