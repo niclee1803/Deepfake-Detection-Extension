@@ -42,8 +42,10 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 
 ## Demo Video
 <p align="center">
-   [![Demo](https://img.youtube.com/vi/Tz4syHcZ2nI/0.jpg)](https://www.youtube.com/watch?v=Tz4syHcZ2nI)
-</p>
+   <a href="https://www.youtube.com/watch?v=Tz4syHcZ2nI">
+       <img src="https://img.youtube.com/vi/Tz4syHcZ2nI/0.jpg" alt="Demo" />
+   </a>
+</p>  
 
 ## Gallery
 <p align="center">
