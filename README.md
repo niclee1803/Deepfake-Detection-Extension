@@ -25,7 +25,10 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 
 ## Tools used
 * Javascript, HTML, CSS for frontend
-* Perplexity sonar model for fact checking
-* 
+* Python, FastAPI, ... for backend
 
 ## Sources
+* [sonar by Perplexity](https://sonar.perplexity.ai/) model for fact checking
+* [flux-detector by LukasT9](https://huggingface.co/LukasT9/flux-detector) for deepfake detection
+* [AI_ImageClassification_MidjourneyV6_SDXL by ideepankarsharma2003](https://huggingface.co/ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL) for deepfake detection
+* [sdxl-detector by Organika](https://huggingface.co/Organika/sdxl-detector) for deepfake detection
