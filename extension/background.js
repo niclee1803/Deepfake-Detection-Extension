@@ -29,7 +29,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       .then((blob) => {
         const formData = new FormData();
         formData.append("file", blob);
-        return fetch("http://127.0.0.1:8000/detect/", {
+        return fetch("https://fastapi-app-744484300805.asia-southeast1.run.app/detect/", {
           method: "POST",
           body: formData,
         });
