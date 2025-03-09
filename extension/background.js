@@ -44,13 +44,17 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
           formattedResult += `<h3>${modelName} Results:</h3>`;
           
           // Handle different model output formats
-          if (modelName === 'sdxl' || (typeof predictions === 'object' && !Array.isArray(predictions) && predictions !== null && !predictions[0])) {
+          if (typeof predictions === 'object' && !Array.isArray(predictions) && predictions !== null) {
             formattedResult += "<p>";
-            for (const [label, probability] of Object.entries(predictions)) {
-              formattedResult += `${label}: ${(probability * 100).toFixed(2)}%<br>`;
+            for (const [label, value] of Object.entries(predictions)) {
+              if (typeof value === 'number') {
+                formattedResult += `${label}: ${(value * 100).toFixed(2)}%<br>`;
+              } else {
+                formattedResult += `${label}: ${value}<br>`;
+              }
             }
             formattedResult += "</p>";
-          } else if (modelName === 'flux' || (Array.isArray(predictions) && predictions.length === 2)) {
+          } else if (Array.isArray(predictions) || (typeof predictions === 'object' && predictions.length === 2)) {
             const [prob, classification] = predictions;
             formattedResult += `<p>Classification: ${classification}<br>Probability Real: ${(prob * 100).toFixed(2)}%</p>`;
           } else {
