@@ -12,7 +12,7 @@ With this Chrome extension, you can verify information online in just a few clic
 git clone
 ```
 
-2. Put in Perplexity API key in the background.js file (**Contact niclee1803@gmail.com for the API key for Techfest2025**)
+2. Put in Perplexity API key in the background.js file (**Contact niclee1803@gmail.com or @niclee1803 telegram for the API key for Techfest2025**)
 ``` javascript
 const apiKey = "<PERPLEXITY_API_KEY>";
 ```
