@@ -45,7 +45,7 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 ## Demo Video
 <p align="center">
    <a href="https://youtu.be/wDFsjn5UWqk">
-       <img src="extension/icon.png" size=50% />
+       <img src="extension/icon.png" height=50% width=50% />
    </a>
 </p>  
 
