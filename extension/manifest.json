@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Deepfake Detector",
+  "name": "VerifyAI",
   "version": "1.0",
-  "description": "Detect deepfake images using right-click.",
+  "description": "Detect deepfake images and verify claims using right-click.",
   "host_permissions": [
     "<all_urls>"
   ],
