@@ -48,16 +48,17 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 </p>  
 
 <p align="center">
+  <img src="gallery/screenshot.png?raw=true" height="500" width="750" alt="sample" />
+  <br />
+  <em>Fake news detection feature</em>
+</p> 
+
+<p align="center">
   <img src="gallery/screenshot3.png?raw=true" height="500" width="500" alt="sample" />
   <br />
   <em>Right click on image</em>
 </p>  
-
-<p align="center">
-  <img src="gallery/screenshot.png?raw=true" height="500" width="750" alt="sample" />
-  <br />
-  <em>Fake news detection feature</em>
-</p>  
+ 
 
 <p align="center">
   <img src="gallery/screenshot2.png?raw=true" height="500" width="750" alt="sample" />
