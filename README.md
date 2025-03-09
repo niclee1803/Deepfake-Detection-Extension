@@ -1,4 +1,6 @@
 # VerifyAI Chrome Extension
+![Alt text](https://github.com/niclee1803/deepfake-detection-extension/blob/main/path/to/screenshot.png?raw=true)
+
 ## About
 With our Chrome extension, you can verify information online in just a few clicks, without even needing to leave your tab.
 * Verify Text Claims: Highlight text, right-click, and select "Verify Claim" to see a verdict, confidence level, reasoning, and links to the sources it used.
