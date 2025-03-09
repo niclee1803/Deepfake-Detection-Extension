@@ -38,7 +38,7 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 
 ## Gallery
 <p align="center">
-  <img src="screenshot4.png?raw=true" height="500" width="500" alt="sample" />
+  <img src="screenshot4.png?raw=true" height="500" width="400" alt="sample" />
   <br />
   <em>Right click on highlighted text</em>
 </p>  
