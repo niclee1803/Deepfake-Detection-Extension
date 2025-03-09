@@ -1,4 +1,3 @@
-from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import torch
@@ -7,32 +6,6 @@ from torchvision import models, transforms
 from transformers import AutoModelForImageClassification, AutoImageProcessor, ViTImageProcessor
 from PIL import Image
 import io
-
-# Global variables for models
-sdxl_model = None
-sdxl_processor = None
-mjv6_sdxl_model = None
-mjv6_sdxl_feature_extractor = None
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """
-    FastAPI lifespan function to load all models once at starup.
-    This is recommended for FastAPI >= 0.100.
-    """
-    global sdxl_model, sdxl_processor
-    global mjv6_sdxl_model, mjv6_sdxl_feature_extractor
-
-    print("Loading SDXL Detector model...", flush=True)
-    sdxl_model = AutoModelForImageClassification.from_pretrained("Organika/sdxl-detector")
-    sdxl_processor = AutoImageProcessor.from_pretrained("Organika/sdxl-detector", use_fast=True)
-
-    print("Loading MidJourneyV6 + SDXL model...", flush=True)
-    mjv6_sdxl_model = AutoModelForImageClassification.from_pretrained("ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL")
-    mjv6_sdxl_feature_extractor = ViTImageProcessor.from_pretrained("ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL")
-
-    # Yield control back to FastAPI, keeping models in memory
-    yield
     
 app = FastAPI()
 
@@ -47,6 +20,8 @@ app.add_middleware(
 #########################################################################################################
 # SDXL Detector
 #########################################################################################################
+sdxl_model = AutoModelForImageClassification.from_pretrained("Organika/sdxl-detector")
+sdxl_processor = AutoImageProcessor.from_pretrained("Organika/sdxl-detector", use_fast=True)
 def classify_with_sdxl_detector(image_data):
     try:
         # Load and preprocess the image
@@ -75,6 +50,8 @@ def classify_with_sdxl_detector(image_data):
 #########################################################################################################
 # MidJourneyV6 + SDXL Detector
 #########################################################################################################
+mjv6_sdxl_model = AutoModelForImageClassification.from_pretrained("ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL")
+mjv6_sdxl_feature_extractor = ViTImageProcessor.from_pretrained("ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL")
 def classify_with_mjV6_sdxl_detector(image_data):
     try:
         # Load and preprocess the image
