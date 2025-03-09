@@ -17,7 +17,7 @@ mjv6_sdxl_feature_extractor = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
-    FastAPI lifespan function to load all models once at startup.
+    FastAPI lifespan function to load all models once at starup.
     This is recommended for FastAPI >= 0.100.
     """
     global sdxl_model, sdxl_processor
@@ -43,12 +43,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Global variables for models
-sdxl_model = None
-sdxl_processor = None
-mjv6_sdxl_model = None
-mjv6_sdxl_feature_extractor = None
 
 #########################################################################################################
 # SDXL Detector
