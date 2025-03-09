@@ -16,6 +16,7 @@ git clone
 ``` javascript
 const apiKey = "<PERPLEXITY_API_KEY>";
 ```
+**Contact niclee1803@gmail.com for the API key for Techfest2025**
 
 3. Open Chrome -> Manage Extensions. Make sure developer mode is enabled. Click "Load unpacked" (at the top left).
    
@@ -28,7 +29,7 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 * Python, FastAPI for backend
 * PyTorch library for deepfake detection models
 * Docker for containerisation
-* Google Cloud Run for deployment
+* Google Cloud Run for deployment of FastAPI
 
 ## Sources
 * [sonar by Perplexity](https://sonar.perplexity.ai/) model for fact checking
