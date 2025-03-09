@@ -36,19 +36,31 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       })
       .then((response) => response.json())
       .then((result) => {
-        const formattedResult = Object.entries(result)
-          .map(([modelName, predictions]) => {
-            const modelResults = Object.entries(predictions)
-              .map(([label, probability]) => 
-                `${label}: ${(probability * 100).toFixed(2)}%`
-              )
-              .join("<br>");
-            return `<h3>${modelName} Results:</h3><p>${modelResults}</p>`;
-          })
-          .join("<br>");
+        // Handle the combined result format
+        let formattedResult = "<h2>Deepfake Detection Results</h2>";
+        
+        // Process each model in the combined result
+        for (const [modelName, predictions] of Object.entries(result)) {
+          formattedResult += `<h3>${modelName} Results:</h3>`;
+          
+          // Handle different model output formats
+          if (modelName === 'sdxl' || (typeof predictions === 'object' && !Array.isArray(predictions) && predictions !== null && !predictions[0])) {
+            formattedResult += "<p>";
+            for (const [label, probability] of Object.entries(predictions)) {
+              formattedResult += `${label}: ${(probability * 100).toFixed(2)}%<br>`;
+            }
+            formattedResult += "</p>";
+          } else if (modelName === 'flux' || (Array.isArray(predictions) && predictions.length === 2)) {
+            const [confidence, classification] = predictions;
+            formattedResult += `<p>Classification: ${classification}<br>Confidence: ${(confidence * 100).toFixed(2)}%</p>`;
+          } else {
+            formattedResult += `<p>Classification: ${predictions}</p>`;
+          }
+        }
+        
         chrome.tabs.sendMessage(tab.id, {
           action: "showAnalysisResult",
-          content: `<h2>Deepfake Detection Results</h2>${formattedResult}`,
+          content: formattedResult
         });
       })
       .catch((error) => {
