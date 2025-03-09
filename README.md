@@ -1,5 +1,5 @@
 # VerifyAI Chrome Extension
-![sample](https://github.com/niclee1803/deepfake-detection-extension/screenshot.png?raw=true)
+![sample](screenshot.png?raw=true)
 
 ## About
 With our Chrome extension, you can verify information online in just a few clicks, without even needing to leave your tab.
