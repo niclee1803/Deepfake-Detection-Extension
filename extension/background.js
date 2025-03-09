@@ -51,8 +51,8 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             }
             formattedResult += "</p>";
           } else if (modelName === 'flux' || (Array.isArray(predictions) && predictions.length === 2)) {
-            const [confidence, classification] = predictions;
-            formattedResult += `<p>Classification: ${classification}<br>Confidence: ${(confidence * 100).toFixed(2)}%</p>`;
+            const [prob, classification] = predictions;
+            formattedResult += `<p>Classification: ${classification}<br>Probability Real: ${(prob * 100).toFixed(2)}%</p>`;
           } else {
             formattedResult += `<p>Classification: ${predictions}</p>`;
           }

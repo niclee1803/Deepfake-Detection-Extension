@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import torch
 import torch.nn as nn
 from torchvision import models, transforms
-from transformers import AutoModelForImageClassification, AutoImageProcessor, AutoFeatureExtractor
+from transformers import AutoModelForImageClassification, AutoImageProcessor, ViTImageProcessor
 from PIL import Image
 import io
 
@@ -71,16 +71,19 @@ def classify_with_sdxl_detector(image_data):
         # Load and preprocess the image
         image = Image.open(io.BytesIO(image_data)).convert("RGB")
         inputs = sdxl_processor(images=image, return_tensors="pt")
-
+        
         # Perform inference
         with torch.no_grad():
             outputs = sdxl_model(**inputs)
             logits = outputs.logits
             probs = torch.nn.functional.softmax(logits, dim=1).squeeze().tolist()
 
-        # Map class indices to labels and create result dictionary
-        result = {sdxl_model.config.id2label[i]: round(probs[i], 3) 
-                for i in range(len(probs))}
+        # Map class indices to labels
+        id2label = {0: "AI Generated", 1: "Real"}
+        result = {
+            "Classifiation": id2label[probs.index(max(probs))],  # Get predicted label
+            "Probability Real": round(probs[1], 3)
+        }
         
         print(f"sdxl result: {result}", flush=True)
         return result
@@ -92,23 +95,25 @@ def classify_with_sdxl_detector(image_data):
 # MidJourneyV6 + SDXL Detector
 #########################################################################################################
 mjv6_sdxl_model = AutoModelForImageClassification.from_pretrained("ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL")
-mjv6_sdxl_feature_extractor = AutoFeatureExtractor.from_pretrained("ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL")
+mjv6_sdxl_feature_extractor = ViTImageProcessor.from_pretrained("ideepankarsharma2003/AI_ImageClassification_MidjourneyV6_SDXL")
 
 def classify_with_mjV6_sdxl_detector(image_data):
     try:
         # Load and preprocess the image
-        image = Image.open(io.BytesIO(image_data))
+        image = Image.open(io.BytesIO(image_data)).convert("RGB")
         inputs = mjv6_sdxl_feature_extractor(images=image, return_tensors="pt")
 
         # Perform inference
         with torch.no_grad():
             outputs = mjv6_sdxl_model(**inputs)
             logits = outputs.logits
+            probs = torch.nn.functional.softmax(logits, dim=1)
+            real_prob = probs[0, 1].item()
             predicted_label = logits.argmax(-1).item()
 
-        id2label = {0: "ai_gen", 1: "human"}
-        print("Predicted label:", id2label[predicted_label])
-        return id2label[predicted_label]
+        id2label = {0: "AI Generated", 1: "Real"}
+        print("Predicted label:", id2label[predicted_label], "Probability Real:", real_prob)
+        return real_prob, id2label[predicted_label]
     except Exception as e:
         print(f"Error in mjv6_sdxl classification: {e}", flush=True)
         return {"error": str(e)}
@@ -139,7 +144,7 @@ def classify_with_flux_detector(image_data):
         with torch.no_grad():
             outputs = model(image_tensor.to(device))
             prob = torch.sigmoid(outputs).item()
-        label = "Real" if prob >= threshold else "AI"
+        label = "Real" if prob >= threshold else "AI Generated"
         return prob, label
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
