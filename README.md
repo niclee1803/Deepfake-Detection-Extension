@@ -1,6 +1,22 @@
 # VerifyAI Chrome Extension
-<img src="screenshot.png?raw=true" height="500" width="750" alt="sample" />
-<img src="screenshot2.png?raw=true" height="500" width="750" alt="sample" />
+<p align="center">
+  <img src="screenshot3.png?raw=true" height="500" width="750" alt="sample" />
+  <br />
+  <em>Context menu</em>
+</p>
+
+<p align="center">
+  <img src="screenshot.png?raw=true" height="500" width="750" alt="sample" />
+  <br />
+  <em>Fake news detection feature</em>
+</p>
+
+<p align="center">
+  <img src="screenshot2.png?raw=true" height="500" width="750" alt="sample" />
+  <br />
+  <em>Deepfake detection feature</em>
+</p>
+
 
 
 ## About
