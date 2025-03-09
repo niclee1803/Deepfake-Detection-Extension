@@ -25,7 +25,8 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 
 ## Tools used
 * Javascript, HTML, CSS for frontend
-* Python, FastAPI, ... for backend
+* Python, FastAPI for backend
+* PyTorch library for deepfake detection models
 
 ## Sources
 * [sonar by Perplexity](https://sonar.perplexity.ai/) model for fact checking
