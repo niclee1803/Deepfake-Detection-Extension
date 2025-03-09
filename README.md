@@ -1,6 +1,6 @@
 # VerifyAI Chrome Extension
 <p align="center">
-  <img src="screenshot3.png?raw=true" height="500" width="750" alt="sample" />
+  <img src="screenshot3.png?raw=true" height="500" width="500" alt="sample" />
   <br />
   <em>Context menu</em>
 </p>
