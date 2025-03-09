@@ -1,7 +1,7 @@
 # VerifyAI Chrome Extension
 <p align="center">
-  <img src="screenshot.png?raw=true" height="300" width="400" alt="sample" />
-  <img src="screenshot2.png?raw=true" height="300" width="400" alt="sample" />
+  <img src="screenshot.png?raw=true" height="400" width="500" alt="sample" />
+  <img src="screenshot2.png?raw=true" height="400" width="500" alt="sample" />
 </p>
 
 ## About
