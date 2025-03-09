@@ -12,7 +12,7 @@ With this Chrome extension, you can verify information online in just a few clic
 git clone
 ```
 
-2. Put in Perplexity API key in the background.js file
+2. Put in Perplexity API key in the background.js file (**Contact niclee1803@gmail.com or @niclee1803 telegram for the API key for Techfest2025**)
 ``` javascript
 const apiKey = "<PERPLEXITY_API_KEY>";
 ```
@@ -26,9 +26,11 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 ## Tools used
 * Javascript, HTML, CSS for frontend
 * Python, FastAPI for backend
-* PyTorch library for deepfake detection models
+* Pillow for image processing
+* Transformer library for deepfake model management
+* PyTorch library for deepfake model inference
 * Docker for containerisation
-* Google Cloud Run for deployment
+* Google Cloud Run for deployment of FastAPI
 
 ## Sources
 * [sonar by Perplexity](https://sonar.perplexity.ai/) model for fact checking
