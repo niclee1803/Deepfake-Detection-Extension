@@ -41,7 +41,9 @@ const apiKey = "<PERPLEXITY_API_KEY>";
 * [sdxl-detector by Organika](https://huggingface.co/Organika/sdxl-detector) for deepfake detection
 
 ## Demo Video
-[![Demo](https://img.youtube.com/vi/Tz4syHcZ2nI/0.jpg)](https://www.youtube.com/watch?v=Tz4syHcZ2nI)
+<p align="center">
+   [![Demo](https://img.youtube.com/vi/Tz4syHcZ2nI/0.jpg)](https://www.youtube.com/watch?v=Tz4syHcZ2nI)
+</p>
 
 ## Gallery
 <p align="center">
