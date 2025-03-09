@@ -12,7 +12,7 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-const apiKey = "pplx-";
+const apiKey = "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";
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "detect-deepfake") {
@@ -41,13 +41,19 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         
         // Process each model in the combined result
         for (const [modelName, predictions] of Object.entries(result)) {
-          formattedResult += `<h3>${modelName} Results:</h3>`;
+          formattedResult += `<h3>${modelName}</h3>`;
           
           // Handle different model output formats
           if (typeof predictions === 'object' && !Array.isArray(predictions) && predictions !== null) {
+            // This is for the 'sdxl' format
             formattedResult += "<p>";
             for (const [label, value] of Object.entries(predictions)) {
-              if (typeof value === 'number') {
+              if (label.toLowerCase() === "classification") {
+                // Check if the value contains "real" (case insensitive)
+                const isReal = typeof value === 'string' && value.toLowerCase().includes("real");
+                const resultColor = isReal ? "#4CAF50" : "#FF5252";
+                formattedResult += `${label}: <span style="color: ${resultColor} !important; font-weight: bold;">${value}</span><br>`;
+              } else if (typeof value === 'number') {
                 formattedResult += `${label}: ${(value * 100).toFixed(2)}%<br>`;
               } else {
                 formattedResult += `${label}: ${value}<br>`;
@@ -55,10 +61,16 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
             }
             formattedResult += "</p>";
           } else if (Array.isArray(predictions) || (typeof predictions === 'object' && predictions.length === 2)) {
+            // This is for the tuple format (mjv6_sdxl, flux)
             const [prob, classification] = predictions;
-            formattedResult += `<p>Classification: ${classification}<br>Probability Real: ${(prob * 100).toFixed(2)}%</p>`;
+            const isReal = typeof classification === 'string' && classification.toLowerCase().includes("real");
+            const resultColor = isReal ? "#4CAF50" : "#FF5252";
+            formattedResult += `<p>Classification: <span style="color: ${resultColor} !important; font-weight: bold;">${classification}</span><br>Probability Real: ${(prob * 100).toFixed(2)}%</p>`;
           } else {
-            formattedResult += `<p>Classification: ${predictions}</p>`;
+            // This is for string format
+            const isReal = typeof predictions === 'string' && predictions.toLowerCase().includes("real");
+            const resultColor = isReal ? "#4CAF50" : "#FF5252";
+            formattedResult += `<p>Classification: <span style="color: ${resultColor} !important; font-weight: bold;">${predictions}</span></p>`;
           }
         }
         

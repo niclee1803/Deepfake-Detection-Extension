@@ -81,7 +81,7 @@ def classify_with_sdxl_detector(image_data):
         # Map class indices to labels
         id2label = {0: "AI Generated", 1: "Real"}
         result = {
-            "Classifiation": id2label[probs.index(max(probs))],  # Get predicted label
+            "Classification": id2label[probs.index(max(probs))],  # Get predicted label
             "Probability Real": round(probs[1], 3)
         }
         
